@@ -4,7 +4,7 @@
 """
 import numpy as np
 
-from dROC.validations import validate_input
+from roc_aggregator.validations import validate_input
 
 def partial_cm(fpr, tpr, thresholds, negative_count, total_count):
     """ Compute the partial confusion matrix from the tpr and fpr.

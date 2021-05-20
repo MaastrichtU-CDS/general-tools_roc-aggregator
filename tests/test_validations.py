@@ -4,7 +4,7 @@
 import numpy as np
 import pytest
 
-from dROC import validations
+from roc_aggregator import validations
 
 MEASURES = [
     np.ones(3),

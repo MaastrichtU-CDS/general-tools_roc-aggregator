@@ -4,7 +4,7 @@
 import numpy as np
 import pytest
 
-from dROC import roc_curve, precision_recall_curve
+from roc_aggregator import roc_curve, precision_recall_curve
 
 TOTAL_COUNT = [4, 5]
 NEGATIVE_COUNT = [2, 3]
@@ -16,12 +16,12 @@ THRESHOLDS = [0.4, 0.3, 0.2, 0.1]
 @pytest.fixture()
 def mock_validate_input(mocker):
     """ So we control time """
-    return mocker.patch('dROC.validations.validate_input', return_value=None)
+    return mocker.patch('roc_aggregator.validations.validate_input', return_value=None)
 
 @pytest.fixture()
 def mock_partial_cm(mocker):
     """ So we control time """
-    return mocker.patch('dROC.partial_cm', return_value=(PARTIAL_CM, THRESHOLDS))
+    return mocker.patch('roc_aggregator.partial_cm', return_value=(PARTIAL_CM, THRESHOLDS))
 
 def test_roc_curve(mock_validate_input, mock_partial_cm):
     """ Test the roc_curve function.

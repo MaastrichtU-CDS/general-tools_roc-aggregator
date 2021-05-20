@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='dROC',
+    name='roc_aggregator',
     version='0.1.0',
-    description='dROC',
-    packages=find_packages(include=['dROC', 'dROC.*']),
+    description='ROC aggregator',
+    packages=find_packages(include=['roc_aggregator', 'roc_aggregator.*']),
     install_requires=[
         'numpy'
     ],
