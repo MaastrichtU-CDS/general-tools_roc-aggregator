@@ -38,8 +38,14 @@ def partial_cm(fpr, tpr, thresholds, negative_count, total_count):
         # Add the tp and fp values to the global array
         acc += cm_sorted[sum, :]
         # Increment the shift
-        shift += len(node_thresholds) 
-    return acc, np.sort(thresholds_stack)[::-1]
+        shift += len(node_thresholds)
+
+    # Sort the tresholds and remove repeated entries
+    thresholds_stack_sorted, unique_ind = np.unique(
+        np.sort(thresholds_stack)[::-1],
+        return_index=True
+    )
+    return acc[unique_ind, :][::-1], thresholds_stack_sorted[::-1]
 
 def roc_curve(fpr, tpr, thresholds, negative_count, total_count):
     """ Compute Receiver operating characteristic (ROC).
