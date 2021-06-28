@@ -48,9 +48,9 @@ def test_precision_recall_curve(mock_validate_input, mock_partial_cm):
     assert not mock_validate_input.called
     # assert mock_validate_input.assert_called_with()
     mock_partial_cm.assert_called_with(*INPUT)
-    assert all(pre == [1, 1, 0, 1/3, 6/9, 6/11, 11/18])
-    assert all(recall == [0, 0, 0, 1/11, 6/11, 6/11, 1])
-    assert all(thresholds_stack == THRESHOLDS_STACKED)
+    assert all(pre == [11/18, 6/11, 6/9, 1/3, 0, 1, 1])
+    assert all(recall == [1, 6/11, 6/11, 1/11, 0, 0, 0])
+    assert all(thresholds_stack == THRESHOLDS_STACKED[::-1])
 
 def test_partial_cm():
     """ Test the partial confusion matrix function.
