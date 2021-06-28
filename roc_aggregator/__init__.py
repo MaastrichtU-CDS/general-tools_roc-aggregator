@@ -109,4 +109,4 @@ def precision_recall_curve(fpr, tpr, thresholds, negative_count, total_count):
     pre = cm_partial[:, 1] / (cm_partial[:, 1] + cm_partial[:, 0])
     recall = cm_partial[:, 1] / (np.sum(total_count) - np.sum(negative_count))
 
-    return np.nan_to_num(pre, copy=False, nan=1.0), recall, thresholds_stack
+    return np.nan_to_num(pre, copy=False, nan=1.0)[::-1], recall[::-1], thresholds_stack[::-1]
