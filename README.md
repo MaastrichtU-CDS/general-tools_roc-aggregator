@@ -38,7 +38,7 @@ fpr, tpr, thresh_stack = roc_curve(
 np.trapz(tpr, fpr)
 ```
 
-A complete example of the usage of the roc-aggregator can be found [here](roc-aggregator/examples/example.py).
+A complete example of the usage of the roc-aggregator can be found [here](./roc_aggregator/examples/example.py).
 
 ### Visualization
 
@@ -55,5 +55,5 @@ plt.show()
 
 ## Testing
 
-Unit tests are available at [`/roc-aggregator/tests`](roc-aggregator/tests).
+Unit tests are available at [`/roc-aggregator/tests`](./tests).
 Install the dependencies required and run the tests using `pytest` or `python3 setup.py test`.
