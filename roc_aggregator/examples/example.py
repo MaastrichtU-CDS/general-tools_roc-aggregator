@@ -19,7 +19,7 @@ def individual_roc(X, Y, model):
     prec_score = average_precision_score(Y, pred_prob[:,1])
 
     cm_by_threshold = []
-    for th in thresh:
+    for th in thresh_prec:
         cm_by_threshold.append(confusion_matrix(Y, pred_prob[:,1] >= th, labels=[0,1]).ravel())
 
     return fpr, tpr, thresh, auc_score, prec, recall, thresh_prec, cm_by_threshold
@@ -47,7 +47,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     np.concatenate((X1, X2)),
     np.concatenate((y1, y2)),
     test_size=0.3,
-    random_state=13
+    random_state=4
 )
 
 model = LogisticRegression()
@@ -61,7 +61,7 @@ fpr_1, tpr_1, thresh_1, auc_score_1, _, _, thresh_pre_1, cm1 = individual_roc(X1
 fpr_2, tpr_2, thresh_2, auc_score_2, _, _, thresh_pre_2, cm2 = individual_roc(X2, y2, model)
 fpr_3, tpr_3, thresh_3, auc_score_3, _, _, thresh_pre_3, cm3 = individual_roc(X3, y3, model)
 
-# Compute the global ROC and precision-recall curve
+# Compute the global ROC
 fpr, tpr, thresh_stack = roc_curve(
     [fpr_1, fpr_2, fpr_3],
     [tpr_1, tpr_2, tpr_3],
@@ -81,6 +81,7 @@ print("Compare ROC AUC")
 print(f'Central case with sklearn: {auc_score_c}')
 print(f'roc-aggregator: {np.trapz(tpr, fpr)}')
 
+# Compute the global precision-recall curve
 pre, recall, thresh_stack = precision_recall_curve(
     [fpr_1, fpr_2, fpr_3],
     [tpr_1, tpr_2, tpr_3],
@@ -89,7 +90,11 @@ pre, recall, thresh_stack = precision_recall_curve(
     [len(dataset) for dataset in [X1, X2, X3]]
 )
 
+plot_roc(pre, recall, 'roc-aggregator', 'orange', '--')
+plot_roc(prec_c, recall_c, 'central case with sklearn', 'blue', 'dotted')
+plt.show()
+
 # Validate the results
 print("Compare precision-recall curve")
-print(f'Central case with sklearn: {np.trapz(prec_c, recall_c)}')
-print(f'roc-aggregator: {np.trapz(pre, recall)}')
+print(f'Central case with sklearn: {np.trapz(recall_c, prec_c)}')
+print(f'roc-aggregator: {np.trapz(recall, pre)}')

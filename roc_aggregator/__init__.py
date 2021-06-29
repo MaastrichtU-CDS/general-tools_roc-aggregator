@@ -6,7 +6,7 @@ import numpy as np
 
 from roc_aggregator.validations import validate_input
 
-def partial_cm(fpr, tpr, thresholds, negative_count, total_count):
+def partial_cm(fpr, tpr, thresholds, negative_count, total_count, descending=False):
     """ Compute the partial confusion matrix from the tpr and fpr.
     """
     # Arrange the necessary parameters
@@ -42,10 +42,17 @@ def partial_cm(fpr, tpr, thresholds, negative_count, total_count):
 
     # Sort the tresholds and remove repeated entries
     thresholds_stack_sorted, unique_ind = np.unique(
-        np.sort(thresholds_stack)[::-1],
+        np.sort(thresholds_stack)[::-1] if descending else np.sort(thresholds_stack),
         return_index=True
     )
-    return acc[unique_ind, :][::-1], thresholds_stack_sorted[::-1]
+
+    if descending:
+        cm = acc[unique_ind[::-1], :]
+        thresholds_stack_sorted = thresholds_stack_sorted[::-1]
+    else:
+        cm = acc[::-1][unique_ind, :]
+
+    return cm, thresholds_stack_sorted
 
 def roc_curve(fpr, tpr, thresholds, negative_count, total_count):
     """ Compute Receiver operating characteristic (ROC).
@@ -60,8 +67,8 @@ def roc_curve(fpr, tpr, thresholds, negative_count, total_count):
 
         Returns
         -------
-        fpr: np.array() - The false positive rates for the global ROC.
-        tpr: np.array() - The true positive rates for the global ROC.
+        fpr_global: np.array() - The false positive rates for the global ROC.
+        tpr_global: np.array() - The true positive rates for the global ROC.
         thresholds_stack: np.array() - The thresholds used to compute the fpr and tpr.
 
         Raises
@@ -71,13 +78,14 @@ def roc_curve(fpr, tpr, thresholds, negative_count, total_count):
     """
     #validate_input(fpr, tpr, thresholds, negative_count, total_count)
     # Obtain the partial confusion matrix (tp and fp)
-    cm_partial, thresholds_stack = partial_cm(fpr, tpr, thresholds, negative_count, total_count)
+    cm_partial, thresholds_stack = partial_cm(
+        fpr, tpr, thresholds, negative_count, total_count, descending=True)
     
-    # Compute the fpr and tpr
-    fpr = cm_partial[:, 0] / np.sum(negative_count)
-    tpr = cm_partial[:, 1] / (np.sum(total_count) - np.sum(negative_count))
+    # Compute the global fpr and tpr
+    fpr_global = np.divide(cm_partial[:, 0], np.sum(negative_count))
+    tpr_global = np.divide(cm_partial[:, 1], (np.sum(total_count) - np.sum(negative_count)))
 
-    return fpr, tpr, thresholds_stack
+    return fpr_global, tpr_global, thresholds_stack
 
 def precision_recall_curve(fpr, tpr, thresholds, negative_count, total_count):
     """ Compute the precision recall curve.
@@ -106,7 +114,8 @@ def precision_recall_curve(fpr, tpr, thresholds, negative_count, total_count):
     cm_partial, thresholds_stack = partial_cm(fpr, tpr, thresholds, negative_count, total_count)
 
     # Compute the tpr/recall and precision
-    pre = cm_partial[:, 1] / (cm_partial[:, 1] + cm_partial[:, 0])
-    recall = cm_partial[:, 1] / (np.sum(total_count) - np.sum(negative_count))
+    pre_dividend = cm_partial[:, 1] + cm_partial[:, 0]
+    pre = np.divide(cm_partial[:, 1], pre_dividend, out=np.ones(len(cm_partial)), where=pre_dividend!=0)
+    recall = np.divide(cm_partial[:, 1], (np.sum(total_count) - np.sum(negative_count)))
 
-    return np.nan_to_num(pre, copy=False, nan=1.0)[::-1], recall[::-1], thresholds_stack[::-1]
+    return pre, recall, thresholds_stack
