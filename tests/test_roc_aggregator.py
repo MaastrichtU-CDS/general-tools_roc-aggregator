@@ -13,7 +13,7 @@ TPR = [[0, 3/6, 1], [0, 0, 1/5, 3/5, 3/5, 1]]
 FPR = [[0, 1/2, 1], [0, 2/5, 2/5, 2/5, 4/5, 5/5]]
 THRESHOLDS = [[1.3, 0.3, 0.1], [1.4, 0.4, 0.35, 0.3, 0.2, 0.1]]
 
-INPUT = (TPR, FPR, THRESHOLDS, NEGATIVE_COUNT, TOTAL_COUNT)
+INPUT = (FPR, TPR, THRESHOLDS, NEGATIVE_COUNT, TOTAL_COUNT)
 
 THRESHOLDS_STACKED = np.array([0.1, 0.2, 0.3, 0.35, 0.4, 1.3, 1.4])
 PARTIAL_CM = np.array([[7, 11], [5, 6], [3, 6], [2, 1], [2, 0], [0, 0], [0, 0]])

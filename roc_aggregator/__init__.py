@@ -19,8 +19,9 @@ def partial_cm(fpr, tpr, thresholds, negative_count, total_count, descending=Fal
         # Shift the index and thresholds according to the node
         # Necessary to guarantee that the current node thresholds
         # are always consider first when sorted
-        node_indexes_shifted = np.flip(np.roll(node_indexes, -shift))
-        thresholds_stack_shifted = np.flip(np.roll(thresholds_stack, -shift))
+        shift -= len(node_thresholds)
+        node_indexes_shifted = np.roll(node_indexes, shift)
+        thresholds_stack_shifted = np.roll(thresholds_stack, shift)
         # Sort all the thresholds
         sorted_indexes = np.argsort(thresholds_stack_shifted)[::-1]
         # Build an index list based on the i node values by doing a cumulative sum
@@ -37,10 +38,8 @@ def partial_cm(fpr, tpr, thresholds, negative_count, total_count, descending=Fal
         )
         # Add the tp and fp values to the global array
         acc += cm_sorted[sum, :]
-        # Increment the shift
-        shift += len(node_thresholds)
 
-    # Sort the tresholds and remove repeated entries
+    # Sort the thresholds and remove repeated entries
     thresholds_stack_sorted, unique_ind = np.unique(
         np.sort(thresholds_stack)[::-1] if descending else np.sort(thresholds_stack),
         return_index=True
