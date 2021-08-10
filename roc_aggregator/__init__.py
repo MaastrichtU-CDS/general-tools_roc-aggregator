@@ -24,9 +24,13 @@ def partial_cm(fpr, tpr, thresholds, negative_count, total_count, descending=Fal
         thresholds_stack_shifted = np.roll(thresholds_stack, shift)
         # Sort all the thresholds
         sorted_indexes = np.argsort(thresholds_stack_shifted)[::-1]
-        # Build an index list based on the i node values by doing a cumulative sum
+        # Build an index list based on the i node values by doing a cumulative sum.
+        # Thresholds below the smallest threshold for the i node will have an index
+        # of -1 that will later be mapped to the first entry in the confusion
+        # matrix
         sum = np.cumsum(np.equal(node_indexes_shifted, i)[sorted_indexes]) - 1
-        # Calculating and sort by threshold the tp and fp for the node
+        # Calculating the partial confusion matrix (fp and tp) and sorting it
+        # by threshold
         cm = np.multiply(
             np.column_stack([np.array(fpr[i]), np.array(tpr[i])]),
             [negative_count[i], total_count[i] - negative_count[i]]
