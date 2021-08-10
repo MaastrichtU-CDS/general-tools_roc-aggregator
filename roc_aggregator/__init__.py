@@ -31,13 +31,13 @@ def partial_cm(fpr, tpr, thresholds, negative_count, total_count, descending=Fal
             np.column_stack([np.array(fpr[i]), np.array(tpr[i])]),
             [negative_count[i], total_count[i] - negative_count[i]]
         )
-        cm_sorted = np.append(
-            cm[np.argsort(node_thresholds)[::-1]],
-            [[cm[0][0], cm[0][1]]],
-            axis=0
-        )
+        cm_sorted = cm[np.argsort(node_thresholds)[::-1]]
         # Add the tp and fp values to the global array
-        acc += cm_sorted[sum, :]
+        acc += np.append(
+            cm_sorted,
+            [[cm_sorted[0][0], cm_sorted[0][1]]],
+            axis=0
+        )[sum, :]
 
     # Sort the thresholds and remove repeated entries
     thresholds_stack_sorted, unique_ind = np.unique(
@@ -99,8 +99,8 @@ def precision_recall_curve(fpr, tpr, thresholds, negative_count, total_count):
 
         Returns
         -------
-        fpr: np.array() - The false positive rates for the global ROC.
-        tpr: np.array() - The true positive rates for the global ROC.
+        pre: np.array() - The precision for the global ROC.
+        recall: np.array() - The recall for the global ROC.
         thresholds_stack: np.array() - The thresholds used to compute the fpr and tpr.
 
         Raises

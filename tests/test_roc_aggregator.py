@@ -9,9 +9,9 @@ from roc_aggregator import roc_curve, precision_recall_curve, partial_cm
 TOTAL_COUNT = [8, 10]
 NEGATIVE_COUNT = [2, 5]
 
-TPR = [[0, 3/6, 1], [0, 0, 1/5, 3/5, 3/5, 1]]
-FPR = [[0, 1/2, 1], [0, 2/5, 2/5, 2/5, 4/5, 5/5]]
-THRESHOLDS = [[1.3, 0.3, 0.1], [1.4, 0.4, 0.35, 0.3, 0.2, 0.1]]
+TPR = [[3/6, 1, 0], [0, 1, 0, 1/5, 3/5, 3/5]]
+FPR = [[1/2, 1, 0], [0, 1, 2/5, 2/5, 2/5, 4/5]]
+THRESHOLDS = [[0.3, 0.1, 1.3], [1.4, 0.1, 0.4, 0.35, 0.3, 0.2]]
 
 INPUT = (FPR, TPR, THRESHOLDS, NEGATIVE_COUNT, TOTAL_COUNT)
 

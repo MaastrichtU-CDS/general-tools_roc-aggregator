@@ -24,13 +24,13 @@ def individual_roc(X, Y, model):
 
     return fpr, tpr, thresh, auc_score, prec, recall, thresh_prec, cm_by_threshold
 
-def plot_roc(fpr, tpr, label, color, linestyle):
+def plot_roc(fpr, tpr, label, color, linestyle, precision_recall=False):
     plt.style.use('seaborn')
     plt.plot(fpr, tpr, color=color, label=label, linestyle=linestyle)
     plt.legend()
-    plt.title('ROC curve')
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive rate')
+    plt.title('Precision-Recall Curve' if precision_recall else 'ROC curve')
+    plt.xlabel('Recall' if precision_recall else 'False Positive Rate')
+    plt.ylabel('Precision' if precision_recall else 'True Positive rate')
     #plt.savefig('ROC',dpi=300)
 
 # 3 nodes
@@ -75,8 +75,8 @@ plot_roc(fpr_c, tpr_c, 'central case with sklearn', 'blue', 'dotted')
 plt.show()
 
 # Validate the results
-assert np.array_equal(tpr[np.argmax(thresh_stack < 1) - 1:], tpr_c)
-assert np.array_equal(fpr[np.argmax(thresh_stack < 1) - 1:], fpr_c)
+assert np.allclose(tpr[np.argmax(thresh_stack < 1) - 1:], tpr_c)
+assert np.allclose(fpr[np.argmax(thresh_stack < 1) - 1:], fpr_c)
 print("Compare ROC AUC")
 print(f'Central case with sklearn: {auc_score_c}')
 print(f'roc-aggregator: {np.trapz(tpr, fpr)}')
@@ -90,11 +90,11 @@ pre, recall, thresh_stack = precision_recall_curve(
     [len(dataset) for dataset in [X1, X2, X3]]
 )
 
-plot_roc(pre, recall, 'roc-aggregator', 'orange', '--')
-plot_roc(prec_c, recall_c, 'central case with sklearn', 'blue', 'dotted')
+plot_roc(pre, recall, 'roc-aggregator', 'orange', '--', precision_recall=True)
+plot_roc(prec_c, recall_c, 'central case with sklearn', 'blue', 'dotted', precision_recall=True)
 plt.show()
 
 # Validate the results
 print("Compare precision-recall curve")
-print(f'Central case with sklearn: {np.trapz(recall_c, prec_c)}')
-print(f'roc-aggregator: {np.trapz(recall, pre)}')
+print(f'Central case with sklearn: {-np.trapz(prec_c, recall_c)}')
+print(f'roc-aggregator: {-np.trapz(pre, recall)}')

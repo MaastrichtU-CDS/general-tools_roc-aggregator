@@ -1,7 +1,18 @@
 # roc-aggregator
 
-Aggregates the ROCs obtained from multiple sources into one global ROC.
-Additionally, it's also possible to calculate the precision-recall curve.
+Aggregates multiple Receiver Operating Characteristic (ROC) curves
+obtained from different sources into one global ROC. Additionally, it’s
+also possible to calculate the aggregated precision-recall (PR) curve.
+
+## Motivation
+
+The ROC and the AUC (Area Under the Curve) can be essential metrics when
+evaluating a model. In situations where there is a parallelization of
+the model development, such as federated learning, it becomes relevant
+to obtain precise measures for these metrics. These approaches usually
+produce partial results that require aggregation methods to get the
+complete picture. The ROCaggregator appears in this context, allowing to
+compute the precise ROC curve from the partial results.
 
 ## Usage
 
@@ -11,6 +22,8 @@ Install the package using one of the following options:
 - this repository `pip3 install .`
 
 ### Example:
+
+A complete example of the usage of the roc-aggregator can be found [here](./roc_aggregator/examples/example.py).
 
 - Obtain the global ROC curve from different sources by providing the false positive rate (fpr), true positive rate (tpr), thresholds (thresh), the total number of negative samples, and the total number of samples from each source:
 
@@ -50,8 +63,6 @@ import numpy as np
 
 np.trapz(tpr, fpr)
 ```
-
-A complete example of the usage of the roc-aggregator can be found [here](./roc_aggregator/examples/example.py).
 
 ### Visualization
 
