@@ -7,7 +7,7 @@ with open(path.join(current_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='roc_aggregator',
-    version='1.1.1',
+    version='1.1.2',
     author='Pedro Mateus',
     url='https://gitlab.com/UM-CDS/general-tools/roc-aggregator',
     description='ROC aggregator',
